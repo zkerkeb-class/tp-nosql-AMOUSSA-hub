@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
         const pokemons = await Pokemon.find();
         res.status(200).json(pokemons);
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération des Pokémon.", error: error.message });
+        res.status(500).json({ message: "Erreur lors de la récupération des Pokémons.", error: error.message });
     }
 });
 
