@@ -22,7 +22,7 @@ router.get('/:id', async (req, res) => {
             return res.status(400).json({ message: "L'ID doit être un nombre valide." });
         }
 
-        const pokemon = await Pokemon.findOne({ id: id }); // Cherche par le champ 'id' du schéma
+        const pokemon = await Pokemon.findOne({ id: id });
 
         if (pokemon) {
             res.status(200).json(pokemon);
