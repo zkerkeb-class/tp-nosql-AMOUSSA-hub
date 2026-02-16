@@ -2,7 +2,7 @@ import 'dotenv/config'; // Charge les variables d'environnement
 import mongoose from 'mongoose';
 import connectDB from './connect.js';
 import Pokemon from '../models/pokemon.js';
-import pokemonsList from '../data/pokemons.json'; // Importe directement le fichier JSON
+import pokemonsList from '../data/pokemons.json' assert { type: 'json' }; // Correction ici
 
 const seedDB = async () => {
     try {
