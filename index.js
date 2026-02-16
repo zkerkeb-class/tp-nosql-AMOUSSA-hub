@@ -4,8 +4,7 @@ import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
-
-
+import pokemonsList from './data/pokemonsList.js'; // Importez la liste des Pokémon
 
 const app = express();
 
@@ -20,6 +19,10 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
+// Nouvelle route pour obtenir tous les Pokémon
+app.get('/api/pokemons', (req, res) => {
+    res.json(pokemonsList);
+});
 
 
 app.listen(process.env.PORT || 3000, () => {
