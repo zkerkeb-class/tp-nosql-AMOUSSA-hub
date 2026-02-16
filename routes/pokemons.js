@@ -3,13 +3,53 @@ import Pokemon from '../models/pokemon.js'; // Importez le modèle Pokemon
 
 const router = express.Router();
 
-// GET /api/pokemons - Retourne tous les Pokémon
+// GET /api/pokemons - Retourne tous les Pokémon avec filtres, tri et pagination
 router.get('/', async (req, res) => {
     try {
-        const pokemons = await Pokemon.find();
-        res.status(200).json(pokemons);
+        const { type, name, sort, page, limit } = req.query;
+        let filter = {};
+
+        // 4.1 - Filtrer par type
+        if (type) {
+            filter.type = type;
+        }
+
+        // 4.2 - Rechercher par nom
+        if (name) {
+            filter["name.english"] = { $regex: name, $options: 'i' };
+        }
+
+        // Pagination
+        const pageNumber = parseInt(page) || 1;
+        const limitNumber = parseInt(limit) || 50;
+        const skip = (pageNumber - 1) * limitNumber;
+
+        // Compter le total des documents avec les filtres appliqués
+        const total = await Pokemon.countDocuments(filter);
+
+        let query = Pokemon.find(filter);
+
+        // 4.3 - Trier les résultats
+        if (sort) {
+            query = query.sort(sort);
+        }
+
+        // 4.4 - Paginer les résultats
+        query = query.skip(skip).limit(limitNumber);
+
+        const pokemons = await query;
+
+        const totalPages = Math.ceil(total / limitNumber);
+
+        res.status(200).json({
+            data: pokemons,
+            page: pageNumber,
+            limit: limitNumber,
+            total: total,
+            totalPages: totalPages
+        });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la récupération des Pokémons.", error: error.message });
+        res.status(500).json({ message: "Erreur lors de la récupération des Pokémon.", error: error.message });
     }
 });
 
@@ -22,7 +62,7 @@ router.get('/:id', async (req, res) => {
             return res.status(400).json({ message: "L'ID doit être un nombre valide." });
         }
 
-        const pokemon = await Pokemon.findOne({ id: id });
+        const pokemon = await Pokemon.findOne({ id: id }); // Cherche par le champ 'id' du schéma
 
         if (pokemon) {
             res.status(200).json(pokemon);
