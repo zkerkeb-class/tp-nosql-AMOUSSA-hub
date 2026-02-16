@@ -11,65 +11,7 @@ router.get('/', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Erreur lors de la récupération des Pokémon.", error: error.message });
     }
-});Partie 3 — CRUD complet avec Mongoose
-~4h
- · Moyen
-Maintenant que la base est remplie, remplacez les routes de la Partie 1 pour qu'elles lisent et écrivent dans MongoDB au lieu du fichier JSON.
-Étape 3.1 — READ : Lister et chercher
-Modifiez vos routes dans routes/pokemons.js
- :
-GET /api/pokemons
-Retournez tous les Pokémon depuis MongoDB avec Pokemon.find()
-GET /api/pokemons/:id
-Cherchez un Pokémon par son champ id
- avec Pokemon.findOne()
-Retournez 404 si non trouvé
-Indice
-Étape 3.2 — CREATE : Ajouter un Pokémon
-POST /api/pokemons
-Récupérez les données du body (req.body
-)
-Créez le Pokémon en base avec Pokemon.create()
-Retournez le Pokémon créé avec le status 201
-En cas d'erreur (validation, doublon...), retournez une 400 avec le message d'erreur
-Testez avec Thunder Client / curl
-POST http://localhost:3000/api/pokemons
-Content-Type: application/json
-
-{
-  "id": 152,
-  "name": { "english": "Chikorita", "french": "Germignon" },
-  "type": ["Grass"],
-  "base": { "HP": 45, "Attack": 49, "Defense": 65 }
-}
-​
-Étape 3.3 — UPDATE : Modifier un Pokémon
-PUT /api/pokemons/:id
-Cherchez le Pokémon par id
-Mettez à jour ses champs avec les données du body
-Utilisez Pokemon.findOneAndUpdate()
- avec l'option { new: true }
- pour retourner le document mis à jour
-Retournez 404 si le Pokémon n'existe pas
-Indice
-Étape 3.4 — DELETE : Supprimer un Pokémon
-DELETE /api/pokemons/:id
-Supprimez le Pokémon avec Pokemon.findOneAndDelete()
-Retournez 404 si le Pokémon n'existait pas
-Retournez le status 204 (No Content) si la suppression a réussi
-Étape 3.5 — Gestion des erreurs
-Vos routes peuvent planter (MongoDB down, données invalides...). Entourez chaque route d'un try/catch
- :
-router.get('/:id', async (req, res) => {
-  try {
-    const pokemon = await Pokemon.findOne({ id: req.params.id });
-    if (!pokemon) return res.status(404).json({ error: 'Pokémon non trouvé' });
-    res.json(pokemon);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
-
 
 // GET /api/pokemons/:id - Retourne un Pokémon par ID
 router.get('/:id', async (req, res) => {
