@@ -9,12 +9,12 @@ router.get('/', async (req, res) => {
         const { type, name, sort, page, limit } = req.query;
         let filter = {};
 
-        // 4.1 - Filtrer par type
+        //Filtrer par type
         if (type) {
             filter.type = type;
         }
 
-        // 4.2 - Rechercher par nom
+        // Rechercher par nom
         if (name) {
             filter["name.french"] = { $regex: name, $options: 'i' };
         }
@@ -29,12 +29,12 @@ router.get('/', async (req, res) => {
 
         let query = Pokemon.find(filter);
 
-        // 4.3 - Trier les résultats
+        // Trier les résultats
         if (sort) {
             query = query.sort(sort);
         }
 
-        // 4.4 - Paginer les résultats
+        // Paginer les résultats
         query = query.skip(skip).limit(limitNumber);
 
         const pokemons = await query;
