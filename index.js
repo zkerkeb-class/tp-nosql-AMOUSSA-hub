@@ -1,9 +1,9 @@
-
 import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
 import pokemonsRouter from './routes/pokemons.js';
+import authRouter from './routes/auth.js'; // Importez le nouveau routeur d'authentification
 import connectDB from './db/connect.js'; 
 
 const app = express();
@@ -18,7 +18,9 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-
+// Utilisez les routes d'authentification
+app.use('/api/auth', authRouter);
+// Utilisez les routes des pokemons
 app.use('/api/pokemons', pokemonsRouter);
 
 
@@ -29,4 +31,4 @@ const startServer = async () => {
     });
 };
 
-startServer(); 
+startServer();

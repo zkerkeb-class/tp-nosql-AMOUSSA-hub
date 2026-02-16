@@ -1,5 +1,6 @@
 import express from 'express';
 import Pokemon from '../models/pokemon.js'; // Importez le modèle Pokemon
+import auth from '../middleware/auth.js'; // Importez le middleware d'authentification
 
 const router = express.Router();
 
@@ -9,14 +10,14 @@ router.get('/', async (req, res) => {
         const { type, name, sort, page, limit } = req.query;
         let filter = {};
 
-        //Filtrer par type
+        // 4.1 - Filtrer par type
         if (type) {
             filter.type = type;
         }
 
-        // Rechercher par nom
+        // 4.2 - Rechercher par nom
         if (name) {
-            filter["name.french"] = { $regex: name, $options: 'i' };
+            filter["name.english"] = { $regex: name, $options: 'i' };
         }
 
         // Pagination
@@ -29,12 +30,12 @@ router.get('/', async (req, res) => {
 
         let query = Pokemon.find(filter);
 
-        // Trier les résultats
+        // 4.3 - Trier les résultats
         if (sort) {
             query = query.sort(sort);
         }
 
-        // Paginer les résultats
+        // 4.4 - Paginer les résultats
         query = query.skip(skip).limit(limitNumber);
 
         const pokemons = await query;
@@ -74,8 +75,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST /api/pokemons - Crée un nouveau Pokémon
-router.post('/', async (req, res) => {
+// POST /api/pokemons - Crée un nouveau Pokémon (protégé)
+router.post('/', auth, async (req, res) => {
     try {
         const newPokemon = await Pokemon.create(req.body);
         res.status(201).json(newPokemon);
@@ -91,8 +92,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-// PUT /api/pokemons/:id - Met à jour un Pokémon existant
-router.put('/:id', async (req, res) => {
+// PUT /api/pokemons/:id - Met à jour un Pokémon existant (protégé)
+router.put('/:id', auth, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
 
@@ -119,8 +120,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// DELETE /api/pokemons/:id - Supprime un Pokémon
-router.delete('/:id', async (req, res) => {
+// DELETE /api/pokemons/:id - Supprime un Pokémon (protégé)
+router.delete('/:id', auth, async (req, res) => {
     try {
         const id = parseInt(req.params.id);
 
