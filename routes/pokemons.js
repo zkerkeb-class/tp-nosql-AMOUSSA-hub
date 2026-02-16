@@ -132,7 +132,7 @@ router.delete('/:id', auth, async (req, res) => {
         const deletedPokemon = await Pokemon.findOneAndDelete({ id: id });
 
         if (deletedPokemon) {
-            res.status(204).send(); // 204 No Content pour une suppression réussie
+            res.status(204).send(); 
         } else {
             res.status(404).json({ message: `Pokémon avec l'ID ${id} non trouvé.` });
         }
