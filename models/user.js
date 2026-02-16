@@ -15,21 +15,17 @@ const userSchema = new mongoose.Schema({
 });
 
 // Middleware pre-save pour hasher le mot de passe avant de l'enregistrer
-userSchema.pre('save', function (next) { // Retiré 'async' ici
-    if (!this.isModified('password')) {
-        return next();
-    }
-    const user = this; // Capture le contexte 'this'
-    bcrypt.genSalt(10)
-        .then(salt => bcrypt.hash(user.password, salt))
-        .then(hash => {
-            user.password = hash;
-            next(); // Appelle next() après le hachage réussi
-        })
-        .catch(err => {
-            console.error('Erreur lors du hachage du mot de passe :', err);
-            next(err); // Passe l'erreur à Mongoose
-        });
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) {
+    return;
+  }
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  } catch (error) {
+    throw error; // Lance l'erreur au lieu de next(error)
+  }
 });
 
 // Méthode pour comparer les mots de passe
