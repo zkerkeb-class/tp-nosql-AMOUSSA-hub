@@ -1,10 +1,10 @@
 // Charger les variables d'environnement en PREMIER (avant tout autre import)
-// dotenv lit le fichier .env et rend les variables accessibles via process.env
 import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
-import pokemonsRouter from './routes/pokemons.js'; // Importez le routeur Pokémon
+import pokemonsRouter from './routes/pokemons.js';
+import connectDB from './db/connect.js'; // Importez la fonction de connexion à la DB
 
 const app = express();
 
@@ -22,7 +22,12 @@ app.get('/', (req, res) => {
 // Utilisation du routeur Pokémon pour toutes les routes /api/pokemons
 app.use('/api/pokemons', pokemonsRouter);
 
+// Fonction asynchrone pour démarrer le serveur après la connexion à la DB
+const startServer = async () => {
+    await connectDB(); // Attendre la connexion à la base de données
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
+    });
+};
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
-});
+startServer(); // Lance le serveur
