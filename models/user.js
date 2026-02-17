@@ -12,9 +12,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Le mot de passe est requis."]
     },
-    favorites: { // Nouveau champ pour les favoris
-        type: [Number], // Tableau de nombres (IDs de Pokémon)
-        default: []     // Par défaut, un tableau vide
+    favorites: { 
+        type: [Number], 
+        default: []
     }
 });
 
