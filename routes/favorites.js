@@ -24,7 +24,7 @@ router.post('/:pokemonId', auth, async (req, res) => {
             return res.status(404).json({ message: "Utilisateur non trouvé." });
         }
 
-        // Utiliser $addToSet pour ajouter l'ID sans créer de doublon
+       
         user.favorites.addToSet(pokemonId);
         await user.save();
 
