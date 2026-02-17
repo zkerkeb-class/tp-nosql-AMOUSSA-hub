@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
 // Middleware pre-save pour hasher le mot de passe avant de l'enregistrer
 userSchema.pre('save', function (next) {
     if (!this.isModified('password')) {
-        return next();
+        return;
     }
     const user = this;
     bcrypt.genSalt(10)
