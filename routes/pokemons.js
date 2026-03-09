@@ -141,7 +141,7 @@ router.delete('/:id', auth, async (req, res) => {
     }
 });
 
-// GET /api/stats - Retourne des statistiques avancées sur les Pokémon
+// GET /api/pokemons/stats - Retourne des statistiques avancées sur les Pokémon
 router.get('/stats', async (req, res) => {
     try {
         // Pipeline d'agrégation pour les stats par type
