@@ -141,4 +141,54 @@ router.delete('/:id', auth, async (req, res) => {
     }
 });
 
+// GET /api/stats - Retourne des statistiques avancées sur les Pokémon
+router.get('/stats', async (req, res) => {
+    try {
+        // Pipeline d'agrégation pour les stats par type
+        const typeStatsPipeline = [
+            // Étape 1: Déplier le tableau 'type' pour avoir un document par type
+            { $unwind: "$type" },
+            // Étape 2: Regrouper par type et calculer les stats
+            {
+                $group: {
+                    _id: "$type",
+                    count: { $sum: 1 },
+                    avgHP: { $avg: "$base.HP" }
+                }
+            },
+            // Étape 3: Renommer _id en typeName pour plus de clarté
+            {
+                $project: {
+                    _id: 0,
+                    typeName: "$_id",
+                    count: 1,
+                    avgHP: { $round: ["$avgHP", 2] } // Arrondir à 2 décimales
+                }
+            },
+            // Étape 4: Trier par nom de type (optionnel)
+            { $sort: { typeName: 1 } }
+        ];
+
+        const typeStats = await Pokemon.aggregate(typeStatsPipeline);
+
+        // Trouver le Pokémon avec le plus d'attaque
+        const strongestAttacker = await Pokemon.findOne().sort({ "base.Attack": -1 }).select('name.english base.Attack').lean();
+
+        // Trouver le Pokémon avec le plus de HP
+        const tankiestPokemon = await Pokemon.findOne().sort({ "base.HP": -1 }).select('name.english base.HP').lean();
+
+        // Construire la réponse finale
+        const stats = {
+            pokemonCountByType: typeStats,
+            strongestAttacker: strongestAttacker,
+            tankiestPokemon: tankiestPokemon
+        };
+
+        res.status(200).json(stats);
+    } catch (error) {
+        console.error("Erreur lors de la génération des stats :", error);
+        res.status(500).json({ message: "Erreur lors de la récupération des statistiques.", error: error.message });
+    }
+});
+
 export default router;
