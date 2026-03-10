@@ -65,7 +65,7 @@ router.get('/', auth, async (req, res) => {
             return res.status(404).json({ message: "Utilisateur non trouvé." });
         }
 
-        
+        // Trouver tous les pokémons qui match les IDs du tableaux de favoris de l'utilisateur
         const favoritePokemons = await Pokemon.find({ id: { $in: user.favorites } });
 
         res.status(200).json({ favorites: favoritePokemons });

@@ -67,7 +67,7 @@ router.get('/', async (req, res) => {
 
         // 4.2 - Rechercher par nom
         if (name) {
-            filter["name.english"] = { $regex: name, $options: 'i' };
+            filter["name.french"] = { $regex: name, $options: 'i' };
         }
 
         // Pagination
