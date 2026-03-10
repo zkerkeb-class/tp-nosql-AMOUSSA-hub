@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const pokemonSchema = new mongoose.Schema({
-    id: { type: Number, required: true, unique: true },
+    id: { type: Number, required: true, unique: true, min: 1 },
     name: {
         english: { type: String, required: true },
         japanese: { type: String },
