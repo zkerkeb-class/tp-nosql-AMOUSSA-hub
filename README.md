@@ -1,7 +1,7 @@
 # Informations sur le Projet
 
 ## Auteur
-Nom / Prénom: AMOUSSA Rayan
+AMOUSSA Rayan
 
 ## Bonus Implémentés (TOUS)
 *   Favoris
