@@ -13,16 +13,12 @@ const teamSchema = new mongoose.Schema({
         required: true
     },
     pokemons: [{
-        type: Number, // Changé de ObjectId à Number
-        ref: 'Pokemon',
-        validate: {
-            validator: function(v) {
-                return v.length <= 6;
-            },
-            message: props => `Une équipe ne peut pas contenir plus de 6 Pokémon, mais a reçu ${props.value.length}.`
-        }
+        type: Number, 
+        ref: 'Pokemon'
+        // Le validateur de taille de tableau est supprimé d'ici
+        // car la validation est déjà gérée dans les routes (routes/teams.js)
     }]
-}, { timestamps: true }); // Ajoute automatiquement createdAt et updatedAt
+}, { timestamps: true }); 
 
 const Team = mongoose.model('Team', teamSchema);
 
