@@ -83,7 +83,14 @@ router.get('/', auth, async (req, res) => {
             .populate('user', 'username')
             .sort({ createdAt: -1 });
         
-        res.status(200).json(teams);
+        const totalTeams = teams.length;
+        const teamNames = teams.map(team => team.name);
+
+        res.status(200).json({
+            totalTeams,
+            teamNames,
+            teams
+        });
     } catch (error) {
         res.status(500).json({ 
             message: "Erreur lors de la récupération des équipes.", 
