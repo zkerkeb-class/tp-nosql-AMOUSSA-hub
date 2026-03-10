@@ -7,16 +7,6 @@ import User from '../models/user.js';
 
 const router = express.Router();
 
-// Fonction utilitaire pour peupler les Pokémon
-const populatePokemons = (query) => {
-    return query.populate({
-        path: 'pokemons',
-        model: 'Pokemon',
-        localField: 'pokemons', // Le champ dans le modèle Team
-        foreignField: 'id'      // Le champ correspondant dans le modèle Pokemon
-    });
-};
-
 // POST /api/teams - Créer une nouvelle équipe
 router.post('/', auth, async (req, res) => {
     try {
@@ -55,7 +45,13 @@ router.post('/', auth, async (req, res) => {
             pokemons: validPokemonNumbers // Stocke les IDs numériques
         });
         
-        const populatedTeam = await populatePokemons(Team.findById(team._id))
+        const populatedTeam = await Team.findById(team._id)
+            .populate({
+                path: 'pokemons',
+                model: 'Pokemon',
+                localField: 'pokemons',
+                foreignField: 'id'
+            })
             .populate('user', 'username');
         
         res.status(201).json(populatedTeam);
@@ -76,7 +72,14 @@ router.post('/', auth, async (req, res) => {
 // GET /api/teams - Lister les équipes de l'utilisateur
 router.get('/', auth, async (req, res) => {
     try {
-        const teams = await populatePokemons(Team.find({ user: req.user.id }))
+        const teams = await Team.find({ user: req.user.id })
+            .populate({
+                path: 'pokemons',
+                model: 'Pokemon',
+                localField: 'pokemons',
+                foreignField: 'id',
+                select: 'id name.english name.french type' // Sélectionne uniquement l'ID, le nom et le type
+            })
             .populate('user', 'username')
             .sort({ createdAt: -1 });
         
@@ -96,7 +99,13 @@ router.get('/:id', auth, async (req, res) => {
             return res.status(400).json({ message: "Identifiant d'équipe invalide." });
         }
 
-        const team = await populatePokemons(Team.findById(req.params.id))
+        const team = await Team.findById(req.params.id)
+            .populate({
+                path: 'pokemons',
+                model: 'Pokemon',
+                localField: 'pokemons',
+                foreignField: 'id'
+            })
             .populate('user', 'username');
         
         if (!team) {
@@ -178,7 +187,13 @@ router.put('/:id', auth, async (req, res) => {
             return res.status(404).json({ message: "Équipe non trouvée ou vous n'êtes pas le propriétaire." });
         }
 
-        const updatedTeam = await populatePokemons(Team.findById(req.params.id))
+        const updatedTeam = await Team.findById(req.params.id)
+            .populate({
+                path: 'pokemons',
+                model: 'Pokemon',
+                localField: 'pokemons',
+                foreignField: 'id'
+            })
             .populate('user', 'username');
         
         res.status(200).json(updatedTeam);
