@@ -18,6 +18,7 @@ router.post('/', auth, async (req, res) => {
             });
         }
         
+        // Savoir si le tableau d'ID est bien composé seulement de chiffre
         const validPokemonNumbers = [];
         if (pokemonIds && pokemonIds.length > 0) {
             for (const id of pokemonIds) {
@@ -27,24 +28,26 @@ router.post('/', auth, async (req, res) => {
                 }
                 validPokemonNumbers.push(parsedId);
             }
-
+            // Regarder si c'est id existe dans la BDD
             const pokemonDocs = await Pokemon.find({
                 id: { $in: validPokemonNumbers } // Recherche par le champ 'id' numérique
             });
             
+            // Regarder si tous les Id on bien été trouvé (sont lié à un pokémon)
             if (pokemonDocs.length !== validPokemonNumbers.length) {
                 return res.status(400).json({ 
                     message: "Certains identifiants de Pokémon fournis n'existent pas." 
                 });
             }
         }
-        
+        // Créer l'équipe
         const team = await Team.create({
             user: req.user.id,
             name,
             pokemons: validPokemonNumbers // Stocke les IDs numériques
         });
         
+        // Aller rechercher l'équipe convient de créer en populate pour avoir + d'infos
         const populatedTeam = await Team.findById(team._id)
             .populate({
                 path: 'pokemons',
