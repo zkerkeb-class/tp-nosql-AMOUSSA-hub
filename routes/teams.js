@@ -193,10 +193,6 @@ router.put('/:id', auth, async (req, res) => {
             { runValidators: true }
         );
 
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: "Équipe non trouvée ou vous n'êtes pas le propriétaire." });
-        }
-
         const updatedTeam = await Team.findById(req.params.id)
             .populate({
                 path: 'pokemons',
