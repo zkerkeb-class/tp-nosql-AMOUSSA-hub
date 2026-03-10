@@ -3,8 +3,8 @@
 ## Auteur
 Nom / Prénom: AMOUSSA Rayan
 
-## Bonus Implémentés
-*   (TOUS) Favoris
+## Bonus Implémentés (TOUS)
+*   Favoris
 *   Equipe
 *   Validation avancée
 *   Stats
