@@ -13,7 +13,7 @@ const teamSchema = new mongoose.Schema({
         required: true
     },
     pokemons: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number, // Changé de ObjectId à Number
         ref: 'Pokemon',
         validate: {
             validator: function(v) {
