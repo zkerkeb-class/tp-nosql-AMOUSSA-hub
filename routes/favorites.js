@@ -13,7 +13,7 @@ router.post('/:pokemonId', auth, async (req, res) => {
             return res.status(400).json({ message: "L'ID du Pokémon doit être un nombre valide." });
         }
 
-        // Vérifier si le Pokémon existe réellement
+        
         const pokemonExists = await Pokemon.findOne({ id: pokemonId });
         if (!pokemonExists) {
             return res.status(404).json({ message: `Pokémon avec l'ID ${pokemonId} non trouvé.` });
@@ -65,7 +65,7 @@ router.get('/', auth, async (req, res) => {
             return res.status(404).json({ message: "Utilisateur non trouvé." });
         }
 
-        // Récupérer les détails complets des Pokémon favoris
+        
         const favoritePokemons = await Pokemon.find({ id: { $in: user.favorites } });
 
         res.status(200).json({ favorites: favoritePokemons });
