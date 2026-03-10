@@ -1,4 +1,4 @@
-import 'dotenv/config'; // Charge les variables d'environnement
+import 'dotenv/config'; 
 import mongoose from 'mongoose';
 import connectDB from './connect.js';
 import Pokemon from '../models/pokemon.js';
