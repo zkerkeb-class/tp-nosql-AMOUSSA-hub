@@ -1,18 +1,18 @@
-// Charger les variables d'environnement en PREMIER (avant tout autre import)
-// dotenv lit le fichier .env et rend les variables accessibles via process.env
 import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
-
-
+import pokemonsRouter from './routes/pokemons.js';
+import authRouter from './routes/auth.js';
+import favoritesRouter from './routes/favorites.js';
+import teamsRouter from './routes/teams.js'; // Importez le nouveau routeur des équipes
+import connectDB from './db/connect.js'; 
 
 const app = express();
 
-app.use(cors()); // Permet les requêtes cross-origin (ex: frontend sur un autre port)
+app.use(cors()); 
 
-app.use('/assets', express.static('assets')); // Permet d'accéder aux fichiers dans le dossier "assets" via l'URL /assets/...
-
+app.use('/assets', express.static('assets')); 
 app.use(express.json());
 
 
@@ -20,8 +20,21 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
+// Utilisez les routes d'authentification
+app.use('/api/auth', authRouter);
+// Utilisez les routes des pokemons
+app.use('/api/pokemons', pokemonsRouter);
+// Utilisez les routes des favoris
+app.use('/api/favorites', favoritesRouter);
+// Utilisez les routes des équipes
+app.use('/api/teams', teamsRouter); // Utilisez le nouveau routeur des équipes
 
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
-});
+const startServer = async () => {
+    await connectDB(); 
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);
+    });
+};
+
+startServer();
