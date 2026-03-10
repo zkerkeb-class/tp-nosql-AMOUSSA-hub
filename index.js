@@ -4,7 +4,8 @@ import express from 'express';
 import cors from 'cors';
 import pokemonsRouter from './routes/pokemons.js';
 import authRouter from './routes/auth.js';
-import favoritesRouter from './routes/favorites.js'; // Importez le nouveau routeur de favoris
+import favoritesRouter from './routes/favorites.js';
+import teamsRouter from './routes/teams.js'; // Importez le nouveau routeur des équipes
 import connectDB from './db/connect.js'; 
 
 const app = express();
@@ -25,6 +26,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/pokemons', pokemonsRouter);
 // Utilisez les routes des favoris
 app.use('/api/favorites', favoritesRouter);
+// Utilisez les routes des équipes
+app.use('/api/teams', teamsRouter); // Utilisez le nouveau routeur des équipes
 
 
 const startServer = async () => {
